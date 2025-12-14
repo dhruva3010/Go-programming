@@ -1,50 +1,28 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"examples.com/bank_controls/fileops"
+	"github.com/Pallinder/go-randomdata"
 )
 
 const balanceFileName = "balance.txt"
 
-func getBalanceFromFile() (data float64, err error) {
-	content, err := os.ReadFile(balanceFileName)
-	if err != nil {
-		return 0.0, errors.New("could not read balance file")
-	}
-	balancetext := string(content)
-	data, err = strconv.ParseFloat(balancetext, 64)
-	if err != nil {
-		return 0.0, errors.New("could not parse balance")
-	}
-	return
-}
-
-func writeBalanceToFile(balance float64) {
-	balanceText := fmt.Sprint(balance)
-	os.WriteFile(balanceFileName, []byte(balanceText), 0644)
-}
-
 func main() {
-	var accountBalance, err = getBalanceFromFile()
+	var accountBalance, err = fileops.GetFloatFromFile(balanceFileName)
 	if err != nil {
 		fmt.Println("Error:", err)
 		fmt.Println(("-------------------------------"))
-		return
+		// return
 		// panic("Could not initialize account balance")
 	}
 
 	fmt.Println("Welcome to the Bank Management System")
+	fmt.Println("Reach us 24/7:", randomdata.PhoneNumber())
 
 	for {
-		fmt.Println("-------------------------------")
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check balance")
-		fmt.Println("2. Deposit money")
-		fmt.Println("3. Withdraw money")
-		fmt.Println("4. Exit")
+		presentOptions()
 
 		var choice int
 		fmt.Print("Enter your choice (1-4): ")
@@ -63,7 +41,7 @@ func main() {
 			}
 			accountBalance += depositAmount
 			fmt.Println("Deposit successful! New balance is:", accountBalance)
-			writeBalanceToFile(accountBalance)
+			fileops.WriteFloatToFile(balanceFileName, accountBalance)
 		case 3:
 			var withdrawAmount float64
 			fmt.Print("Enter amount to withdraw: ")
@@ -75,7 +53,7 @@ func main() {
 			} else {
 				accountBalance -= withdrawAmount
 				fmt.Println("Withdrawal successful! New balance is:", accountBalance)
-				writeBalanceToFile(accountBalance)
+				fileops.WriteFloatToFile(balanceFileName, accountBalance)
 			}
 		case 4:
 			fmt.Println("Exiting...")
