@@ -28,7 +28,9 @@ go.work
 # OS files
 .DS_Store
 Thumbs.db
+*.txt
+*.json
 
 # Local environment variables
 .env
-.env.local
+.env.local  
